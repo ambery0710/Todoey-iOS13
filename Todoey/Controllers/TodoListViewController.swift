@@ -15,23 +15,14 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadItems()
 //
 //        print(dataFilepath)
-        
-        let newItem = Items()
-        newItem.title = "A"
-        itemArray.append(newItem)
-        let newItem2 = Items()
-        newItem2.title = "B"
-        itemArray.append(newItem2)
-        
-//        if let items = defaults.array(forKey: "TodoListArray") as? [Items] {
-//            itemArray = items
-//        }
+
         // Do any additional setup after loading the view.
     }
 
-    //Mark - TableView Datasource Methods
+    //MARK - TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
@@ -48,7 +39,7 @@ class TodoListViewController: UITableViewController {
         return cell
     }
     
-    //Mark - TebleView Delegate Methods
+    //MARK - TebleView Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -58,7 +49,7 @@ class TodoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    //Mark - Add New Items
+    //MARK - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         let alert = UIAlertController(title: "Add New Todo Item", message: "", preferredStyle: .alert)
@@ -82,6 +73,8 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    //MAEK - Model Manupulation Methods
+    
     func saveItems() {
         let encoder = PropertyListEncoder()
         do {
@@ -93,6 +86,18 @@ class TodoListViewController: UITableViewController {
         
         
         self.tableView.reloadData()
+    }
+    
+    func loadItems(){
+        if let data = try? Data(contentsOf: dataFilepath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Items].self, from: data)
+            } catch {
+                print(error)
+            }
+           
+        }
     }
 }
 
